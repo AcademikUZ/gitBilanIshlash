@@ -38,7 +38,7 @@ public class HotelController {
 
 
     @PutMapping(value = "/{id}")
-    public String editAddress(@PathVariable Long id, @RequestBody Hotel modelDto) {
+    public String editHotel(@PathVariable Long id, @RequestBody Hotel modelDto) {
         try {
             Optional<Hotel> optionalhotel = hotelReopsitory.findById(id);
             if (optionalhotel.isPresent()) {
@@ -57,7 +57,7 @@ public class HotelController {
 
 
     @DeleteMapping(value = "/{id}")
-    public String editAddress(@PathVariable Long id) {
+    public String deleteHotel(@PathVariable Long id) {
         try {
             Optional<Hotel> optionalhotel = hotelReopsitory.findById(id);
             if (optionalhotel.isPresent()) {

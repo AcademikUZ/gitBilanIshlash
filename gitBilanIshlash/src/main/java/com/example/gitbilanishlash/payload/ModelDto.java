@@ -14,6 +14,6 @@ public class ModelDto {
     private String number;
     private String floor;
     private Double size;
-    private String nameHotel;
+    private Long hodelId;
 
 }

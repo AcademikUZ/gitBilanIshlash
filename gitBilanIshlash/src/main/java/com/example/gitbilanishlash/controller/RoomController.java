@@ -1,7 +1,10 @@
 package com.example.gitbilanishlash.controller;
 
 import com.example.gitbilanishlash.entity.Hotel;
+import com.example.gitbilanishlash.entity.Room;
+import com.example.gitbilanishlash.payload.ModelDto;
 import com.example.gitbilanishlash.repository.HotelReopsitory;
+import com.example.gitbilanishlash.repository.RoomReopsitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,20 +21,34 @@ public class RoomController {
     @Autowired
     HotelReopsitory hotelReopsitory;
 
+    @Autowired
+    RoomReopsitory roomReopsitory;
+
+
 
     @GetMapping
-    public Page<Hotel> hotelList(@RequestParam int page) {
+    public Page<Room> roomPage(@RequestParam int page) {
         Pageable pageable = PageRequest.of(page, 10);
-        return hotelReopsitory.findAll(pageable);
+        return roomReopsitory.findAll(pageable);
     }
 
     @PostMapping
-    public String addhotel(@RequestBody Hotel hotel) {
+    public String addRoom(@RequestBody ModelDto modelDto) {
         try {
-            if(hotel == null)
-                return "Hotelga qiymat bering";
-            hotelReopsitory.save(hotel);
-            return "Hotel saqlandi!";
+
+            if(modelDto == null)
+                return "Roomga qiymat bering";
+            Optional<Hotel> byIdHotel = hotelReopsitory.findById(modelDto.getHodelId());
+            if(!byIdHotel.isPresent())
+                return "Bunday hotel yo'q";
+
+            Room room = new Room();
+            room.setFloor(modelDto.getFloor());
+            room.setSize(modelDto.getSize());
+            room.setNumber(modelDto.getNumber());
+            room.setHotel(byIdHotel.get());
+            roomReopsitory.save(room);
+            return "Room saqlandi!";
         } catch (Exception e) {
             return "Xatolik yuz berdi!";
         }
@@ -39,15 +56,24 @@ public class RoomController {
 
 
     @PutMapping(value = "/{id}")
-    public String editAddress(@PathVariable Long id, @RequestBody Hotel modelDto) {
+    public String editRoom(@PathVariable Long id, @RequestBody ModelDto modelDto) {
         try {
-            Optional<Hotel> optionalhotel = hotelReopsitory.findById(id);
-            if (optionalhotel.isPresent()) {
-                Hotel hotel = optionalhotel.get();
-                hotel.setNameHotel(modelDto.getNameHotel());
-                hotelReopsitory.save(hotel);
-                return "Hotel o'zgartirildi!";
-            } else return "Bunday hotel yo'q!";
+            if(modelDto == null)
+                return "Roomga qiymat bering";
+            Optional<Hotel> byIdHotel = hotelReopsitory.findById(modelDto.getHodelId());
+            if(!byIdHotel.isPresent())
+                return "Bunday hotel yo'q";
+
+            Optional<Room> roomOptional = roomReopsitory.findById(id);
+            if(!roomOptional.isPresent())
+                return "Bunday room yo'q";
+            Room room = roomOptional.get();
+            room.setFloor(modelDto.getFloor());
+            room.setSize(modelDto.getSize());
+            room.setNumber(modelDto.getNumber());
+            room.setHotel(byIdHotel.get());
+            roomReopsitory.save(room);
+            return "Room o'zgartirildi!";
 
         } catch (Exception e) {
             return "Xatolik yuz berdi!";
@@ -58,14 +84,14 @@ public class RoomController {
 
 
     @DeleteMapping(value = "/{id}")
-    public String editAddress(@PathVariable Long id) {
+    public String deleteRoom(@PathVariable Long id) {
         try {
-            Optional<Hotel> optionalhotel = hotelReopsitory.findById(id);
-            if (optionalhotel.isPresent()) {
-                hotelReopsitory.deleteById(id);
-                return "Hotel o'chirildi!";
+            Optional<Room> roomOptional = roomReopsitory.findById(id);
+            if (roomOptional.isPresent()) {
+                roomReopsitory.deleteById(id);
+                return "Room o'chirildi!";
             }
-            return "Hotel mavjud emas!";
+            return "Room mavjud emas!";
 
         } catch (Exception e) {
             return "Xatolik yuz berdi!";
