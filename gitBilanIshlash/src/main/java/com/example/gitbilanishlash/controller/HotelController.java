@@ -20,7 +20,7 @@ public class HotelController {
 
     @GetMapping
     public Page<Hotel> hotelList(@RequestParam int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, 2);
         return hotelReopsitory.findAll(pageable);
     }
 

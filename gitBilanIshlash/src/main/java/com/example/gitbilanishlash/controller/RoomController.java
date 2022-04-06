@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/hotel")
+@RequestMapping("/room")
 public class RoomController {
 
 
@@ -28,7 +28,7 @@ public class RoomController {
 
     @GetMapping
     public Page<Room> roomPage(@RequestParam int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, 5);
         return roomReopsitory.findAll(pageable);
     }
 
